@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.shortcuts import render
 from django.db.models.functions import Length
 from django.http import JsonResponse
 from django.views import View
@@ -9,19 +10,17 @@ from django.views.generic import TemplateView
 from .models import Dictionary
 
 
-# qs = Dictionary.objects.filter(word__icontains=query)  # .distinct()#.values_list('word')#, flat=True)
-
-
-class WordSearchView(View):
+class AutoCompleteView(View):
     def get(self, request, *args, **kwargs):
         # checking if ajax request or not
         if request.is_ajax():
-            query = request.GET.get("q", "")
-            results = Dictionary.objects.filter(word__icontains=query)
-            exact_match = results.filter(word__iexact=query)  # checking if exact match found
+            query_string = request.GET.get("word", "")
+
+            results = Dictionary.objects.filter(word__icontains=query_string).distinct()
+            exact_match = results.filter(word__iexact=query_string)  # checking if exact match found
             # filtering out startswith query word
-            first_ranked_qs = results.filter(word__startswith=query).order_by(
-                "frequency", Length("word").asc()
+            first_ranked_qs = results.filter(word__startswith=query_string).order_by(
+                "-frequency", Length("word").asc()
             )
             # excluding startswith values and separating query containing values
             second_ranked_qs = results.exclude(
@@ -43,4 +42,8 @@ class WordSearchView(View):
             return JsonResponse({"data": merged_results}, safe=False)
         return JsonResponse({"error": "Bad Request"}, status=400)
 
-# class SearchTemplateView(TemplateView)
+
+class SearchTemplateView(TemplateView):
+    template_name = 'suggestion/search.html'
+
+
