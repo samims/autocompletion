@@ -33,7 +33,7 @@ To run tests
 python manage.py test
 ```
 
-To test using postman use this endpint
+To test using postman use this endpoint
 ```bash
 GET /search?word=<input>
 ```
