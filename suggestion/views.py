@@ -24,7 +24,7 @@ class AutoCompleteView(View):
             # excluding startswith values and separating query containing values
             second_ranked_qs = results.exclude(
                 id__in=first_ranked_qs.values_list("id", flat=True)
-            ).order_by("frequency", Length("word").asc())[:25]
+            ).order_by("frequency", Length("word"))[:25]
 
             if exact_match:
                 # removing exact match from unwanted rank
