@@ -1,6 +1,5 @@
 from itertools import chain
 
-from django.shortcuts import render
 from django.db.models.functions import Length
 from django.http import JsonResponse
 from django.views import View

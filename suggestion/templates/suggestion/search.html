@@ -48,7 +48,7 @@
 
     function callAjax(word, resp){
         $.ajax({
-             url: "http://127.0.0.1:8000/search",
+             url: "/search",
              data: { word: word },
              type: "GET",
              beforeSend: function(xhr){xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');},
